@@ -1,0 +1,25 @@
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	Utilisateurs		|					Cas d'utilisation
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+guest, user, admin		| - Accéder au site vitrine
+user, admin			| - Inscrire un filleul
+user, admin			| - Se connecter
+user, admin			| - Voir son dashboard
+user, admin			| - Modifier son profil
+user, admin			| - Changer son mot de passe oublié
+admin				| - Générer des codes
+admin				| - Voir la liste des codes générer
+user, admin			| - Transférer des codes à un utilisateur
+user, admin			| - Voir l'historique des transferts de codes
+user, admin			| - Faire une demande de retrait
+user, admin			| - Voir la liste des demandes de retraits
+admin				| - Traiter une demande de retrait
+user, admin			| - Voir sa généalogie
+admin				| - Créer un groupe leader
+admin				| - Voir la liste des groupes leaders
+admin				| - Mettre à jour un groupe leader 
+system				| - Retracer toutes les activités sensibles
+admin				| - Voir l'historique des activités sensibles
+				|
+				|
+				|
