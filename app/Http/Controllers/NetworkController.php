@@ -24,6 +24,11 @@ use Illuminate\Support\Facades\Validator;
 use DataTables;
 use Illuminate\Support\Facades\Mail;
 
+use Illuminate\Support\Facades\DB;
+
+use App\Models\user;
+use App\Models\BeParrain;
+
 class NetworkController extends Controller
 {
     protected $recordingTransactionRepository, $markRepository, $actionRepository,
@@ -53,49 +58,71 @@ class NetworkController extends Controller
     public function postRegisterForm(RecordingRequest $request)
     {
         // Vérification de l'existence du parrain
-        if (!$this->userRepository->exists('pseudo', $request->godfather_pseudo)) {
-            return back()->with([
-                'error_godfather_pseudo' => 'Aucun parrain ne possède ce pseudo'
-            ])->withInput();
-        }
+        // if (!$this->userRepository->exists('pseudo', $request->godfather_pseudo)) {
+        //     return back()->with([
+        //         'error_godfather_pseudo' => 'Aucun parrain ne possède ce pseudo'
+        //     ])->withInput();
+        // }
+
+
+        // $findgodfather=0;
+
+        // do{ 
+        //     $godfather_as_user =DB::table('be_parrains')->select('parrain_id')->first();
+        //         echo $godfather_as_user->parrain_id."<br>";
+
+        //         if ($this->userRepository->isGodfatherHasTwoDirectGodsons($godfather_as_user->parrain_id)) {
+
+        //            $deleted = DB::table('be_parrains')->where('parrain_id', '=', $godfather_as_user->parrain_id )->delete();
+                
+        //           } 
+        //           else {
+        //            $request->merge([
+        //                'godfather_id' => $godfather_as_user->parrain_id
+        //            ]);
+        //            echo "votre parrain".$godfather_as_user->parrain_id;
+        //            $findgodfather =1;
+        //         }
+        //    } while( $findgodfather==0);
 
         // Récupération du parrain dans la table users
-        $godfather_as_user = $this->userRepository->getByField('pseudo', $request->godfather_pseudo);
+        // $godfather_as_user = $this->userRepository->getByField('pseudo', $request->godfather_pseudo);
 
         // Vérification du parrain en tant que parrain avec 2 filleuls directs
-        if ($this->userRepository->isGodfatherHasTwoDirectGodsons($godfather_as_user->id)) {
-            return back()->with([
-                'error_godfather_pseudo' => 'Ce parrain a déjà deux filleuls'
-            ])->withInput();
-        }
+        // if ($this->userRepository->isGodfatherHasTwoDirectGodsons($godfather_as_user->id)) {
+        //     return back()->with([
+        //         'error_godfather_pseudo' => 'Ce parrain a déjà deux filleuls'
+        //     ])->withInput();
+        // }
 
         // Vérification de l'existence du payeur
-        if (!$this->userRepository->exists('pseudo', $request->payer_pseudo)) {
-            return back()->with([
-                'error_payer_pseudo' => 'Aucun payeur ne possède ce pseudo'
-            ])->withInput();
-        }
+        // if (!$this->userRepository->exists('pseudo', $request->payer_pseudo)) {
+        //     return back()->with([
+        //         'error_payer_pseudo' => 'Aucun payeur ne possède ce pseudo'
+        //     ])->withInput();
+        // }
 
         // Récupération du payeur dans la table users
-        $payer_as_user = $this->userRepository->getByField('pseudo', $request->payer_pseudo);
+        // $payer_as_user = $this->userRepository->getByField('pseudo', $request->payer_pseudo);
 
         // Vérification du nombre de code du payeur
-        if ($payer_as_user->person->number_of_code < 1) {
-            return back()->with([
-                'error_payer_code' => 'Vous manquez de code pour procéder à cet enregistrement de filleul'
-            ])->withInput();
-        }
+        // if ($payer_as_user->person->number_of_code < 1) {
+        //     return back()->with([
+        //         'error_payer_code' => 'Vous manquez de code pour procéder à cet enregistrement de filleul'
+        //     ])->withInput();
+        // }
 
         // Vérification de la justesse du mot de passe de transaction du payeur
-        if (!$this->personRepository->isTransactionPassword($payer_as_user->id, $request->payer_transaction_password)) {
-            return back()->with([
-                'error_payer_transaction_password' => 'Mot de passe de transaction du payeur incorrect.'
-            ])->withInput();
-        }
+        // if (!$this->personRepository->isTransactionPassword($payer_as_user->id, $request->payer_transaction_password)) {
+        //     return back()->with([
+        //         'error_payer_transaction_password' => 'Mot de passe de transaction du payeur incorrect.'
+        //     ])->withInput();
+        // }
 
         // Enregistrement du filleul
         $request->merge([
-            'godfather_id' => $godfather_as_user->id
+            'godfather_id' =>null
+            // $godfather_as_user->parrain_id
         ]);
         $godson_as_user = $this->userRepository->store($request->all([
             'pseudo', 'email', 'password', 'godfather_id'
@@ -107,28 +134,33 @@ class NetworkController extends Controller
             'last_name', 'first_name', 'country', 'transaction_password', 'user_id'
         ]));
 
+         //Make this user be able to be a godfather
+        //  DB::table('be_parrains')->insert([
+        //     'parrain_id' => $godson_as_user->id
+        //     ]);
+
         // Mis à jour du nombre de code du payeur
-        $payer_as_user->person->number_of_code -= 1;
-        $payer_as_user->person->save();
+        // $payer_as_user->person->number_of_code -= 1;
+        // $payer_as_user->person->save();
 
         $this->recordingTransactionRepository->store([
-            'payer_id' => $payer_as_user->id,
+            'payer_id' => $godson_as_user->id,
             'recorded_id' => $godson_as_user->id,
             'amount' => config('util.recording_transaction_amount'),
             'month' => Carbon::now()->month,
         ]);
 
-        $this->markRepository->store([
-            'action_id' => $this->actionRepository->getByField('code', '#007')->id,
-            'user_id' => $payer_as_user->id,
-            'description' => $payer_as_user->pseudo . ' a ajouté le filleul ' . $request->pseudo . ' !'
-        ]);
+        // $this->markRepository->store([
+        //     'action_id' => 7,
+        //     'user_id' => $godson_as_user->id,
+        //     'description' => $godson_as_user->pseudo . ' a ajouté le filleul ' . $request->pseudo . ' !'
+        // ]);
 
-        Mail::to($request->email)->send(new UserRecorded([
-            'pseudo' => $request->pseudo,
-            'password' => $request->password,
-            'transaction_password' => $request->transaction_password
-        ]));
+        // Mail::to($request->email)->send(new UserRecorded([
+        //     'pseudo' => $request->pseudo,
+        //     'password' => $request->password,
+        //     'transaction_password' => $request->transaction_password
+        // ]));
 
         //Dispatching queues
         for ($i = 0; $i < 8; $i++) {
@@ -137,7 +169,9 @@ class NetworkController extends Controller
             SetBonusesRecords::dispatch(config('util.logs_folder'), 'gnl_b' . ($i + 1), config('util.logs_files_format'));
         }
         
-        return redirect()->route(Auth::check() ? 'dashboard' : 'network.register')->with('success', 'Filleul enregistré avec succès');
+ 
+        return redirect()->route('paynow', [$godson_as_user->id]);
+        //return redirect()->route(Auth::check() ? 'dashboard' : 'network.register')->with('success', 'Filleul enregistré avec succès');
     }
 
     public function genealogy(Request $request)

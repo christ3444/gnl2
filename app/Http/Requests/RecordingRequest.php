@@ -30,10 +30,10 @@ class RecordingRequest extends FormRequest
             'email' => 'required|string|email',
             'country' => 'required|string',
             'password' => 'required|string|min:8|confirmed',
-            'godfather_pseudo' => 'required|string',
-            'transaction_password' => 'required|string|min:8|confirmed',
-            'payer_pseudo' => 'required|string',
-            'payer_transaction_password' => 'required|string',
+            // 'godfather_pseudo' => 'required|string',
+            // 'transaction_password' => 'required|string|min:8|confirmed',
+            // 'payer_pseudo' => 'required|string',
+            // 'payer_transaction_password' => 'required|string',
         ];
     }
 }

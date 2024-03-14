@@ -39,8 +39,8 @@ class WithdrawalRequestRepository extends ResourceRepository
         return  DB::table('withdrawal_requests')
             ->where('processed', '=', false)
             ->join('users', 'withdrawal_requests.claimant_id', '=', 'users.id')
-            ->join('leading_groups', 'withdrawal_requests.leading_group_id', '=', 'leading_groups.id')
-            ->select('withdrawal_requests.*', 'users.pseudo as claimant_pseudo', 'leading_groups.name as leading_group_name')
+            //->join('leading_groups', 'withdrawal_requests.leading_group_id', '=', 'leading_groups.id')
+            ->select('withdrawal_requests.*', 'users.pseudo as claimant_pseudo')
             ->latest()
             ->get();
     }
@@ -49,8 +49,8 @@ class WithdrawalRequestRepository extends ResourceRepository
     {
         return  DB::table('withdrawal_requests')->where('claimant_id', $user_id)
             ->where('processed', '=', false)
-            ->join('leading_groups', 'withdrawal_requests.leading_group_id', '=', 'leading_groups.id')
-            ->select('withdrawal_requests.*', 'leading_groups.name')
+            //->join('leading_groups', 'withdrawal_requests.leading_group_id', '=', 'leading_groups.id')
+            ->select('withdrawal_requests.*')
             ->latest()
             ->get();
     }

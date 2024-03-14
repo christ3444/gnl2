@@ -19,11 +19,19 @@ Route::post('newsletter', 'HomeController@postNewsletterForm')->name('newsletter
 
 Route::get('newsletter-all', 'HomeController@subscribeAllOfTable')->name('newsletter.all');
 
+Route::get('alldeposit', 'DepositController@index')->name('alldeposit');
+
+Route::get('paynow-{id}', 'DepositController@paynow')->name('paynow');
+
+Route::post('paysuccess', 'DepositController@create')->name('paysuccess');
+
 Auth::routes(['register' => false]);
 
 Route::get('encrypt/{data}', 'OptimizationController@__encrypt')->name('enrypt');
 Route::get('reseau/inscrire', 'NetworkController@getRegisterForm')->name('network.register');
 Route::post('reseau/inscrire', 'NetworkController@postRegisterForm')->name('network.register-store');
+
+
 
 Route::middleware(['auth'])->group(function () {
     Route::prefix('espace-membres')->group(function () {

@@ -28,7 +28,11 @@
                 <div class="col-md-12">
                     <div class="card border-dark">
                         <div class="card-header bg-dark d-flex justify-content-between">
-                            <h3 class="text-white mb-0">Historique de demandes de retrait traitées</h3>
+                            <h3 class="text-white mb-0"> @if ($admin) 
+                                 Total de demandes de retrait traitées : {{$somme}} Fcfa
+                                   @else 
+                                   Historique de demandes de retrait traitées
+                                   @endif</h3>
                             {!! link_to_route('withdrawal-request.submit', 'Soumettre', null, ['class' => 'btn btn-info pull-right']) !!}
                         </div>
 
@@ -57,7 +61,7 @@
                                         @if ($admin)                                        
                                             <th>Pseudo du demandeur</th>
                                         @endif
-                                        <th>Groupe leader</th>
+                                        <th>Adresse PM</th>
                                         <th>Montant</th>
                                         <th>Date de demande</th>
                                         <th>Statut</th>
@@ -90,7 +94,7 @@
                 columns: [
                     {data: 'DT_RowIndex', name: 'DT_RowIndex'},
                     {data: 'claimant_pseudo', name: 'claimant_pseudo'},
-                    {data: 'leading_group_name', name: 'leading_group_name'},
+                    {data: 'adress', name: 'adress'},
                     {data: 'amount', name: 'amount'},
                     {data: 'created_at', name: 'created_at'},
                     {data: 'status', name: 'status'},
@@ -103,7 +107,7 @@
                 ajax: "{{ route('withdrawal-request.processed_history') }}",
                 columns: [
                     {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-                    {data: 'leading_group_name', name: 'leading_group_name'},
+                    {data: 'adress', name: 'adress'},
                     {data: 'amount', name: 'amount'},
                     {data: 'created_at', name: 'created_at'},
                     {data: 'status', name: 'status'},

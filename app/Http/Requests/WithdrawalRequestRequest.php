@@ -24,10 +24,10 @@ class WithdrawalRequestRequest extends FormRequest
     public function rules()
     {
         return [
-            'country' => 'required|string',
-            'leading_group_id' => 'required|string',
+            //'country' => 'required|string',
+            //'leading_group_id' => 'required|string',
             'amount' => 'required|integer',
-            'transaction_password' => 'required|string|min:8',
+           // 'transaction_password' => 'required|string|min:8',
         ];
     }
 }

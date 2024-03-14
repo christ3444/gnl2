@@ -14,6 +14,10 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use DataTables;
 
+use App\Models\person;
+
+use App\Models\WithdrawalRequest;
+
 class WithdrawalRequestController extends Controller
 {
     protected $withdrawalRequestRepository, $userRepository, $personRepository,
@@ -37,11 +41,18 @@ class WithdrawalRequestController extends Controller
     public function indexNotProcessed(Request $request)
     {
         $user_id = Auth::id();
+
+        //$datas = WithdrawalRequest::where('claimant_id',$user_id)->where('processed',0)->get();
+
+        $somme = WithdrawalRequest::where('processed','=',false)->sum('amount');
         $admin = $this->userRepository->getRole($user_id) === config('util.roles.admin')['role'];
         if ($request->ajax()) {
             $count = $this->withdrawalRequestRepository->whereClause([['processed', '=', false]])->count();
             $withdrawal_requests =  $admin ? $this->withdrawalRequestRepository->getAllNotProcessedByJoin() : $this->withdrawalRequestRepository->getAllNotProcessedOfUserByJoin($user_id);
             $datatable = $count > 0 ? DataTables::of($withdrawal_requests) : DataTables::of(array());
+            
+           
+
             if ($count > 0) {
                 $datatable->addIndexColumn()
                 ->addColumn('status', function ($row) {
@@ -64,12 +75,16 @@ class WithdrawalRequestController extends Controller
             }
         }
 
-        return view('back-end.withdrawal-request.index_not_processed', compact('admin'));
+        return view('back-end.withdrawal-request.index_not_processed', compact('admin','somme'));
+        //return view('back-end.withdrawal-request.index_not_processed', compact('admin'));
     }
 
     public function indexProcessed(Request $request)
     {
         $user_id = Auth::id();
+
+
+        $somme = WithdrawalRequest::where('processed','=',true)->sum('amount');
         $admin = $this->userRepository->getRole($user_id) === config('util.roles.admin')['role'];
         if ($request->ajax()) {
             $count = $this->withdrawalRequestRepository->whereClause([['processed', '=', true]])->count();
@@ -87,7 +102,7 @@ class WithdrawalRequestController extends Controller
             }
         }
 
-        return view('back-end.withdrawal-request.index_processed', compact('admin'));
+        return view('back-end.withdrawal-request.index_processed', compact('admin','somme'));
     }
 
     public function create(Request $request)
@@ -103,14 +118,19 @@ class WithdrawalRequestController extends Controller
     public function store(WithdrawalRequestRequest $request)
     {
         $user_id = Auth::id();
-        if (!$this->personRepository->isTransactionPassword($user_id, $request->transaction_password)) {
-            return back()->with([
-                'error_transaction_password' => 'Mot de passe de transaction incorrect.'
-            ]);
-        }
+        // if (!$this->personRepository->isTransactionPassword($user_id, $request->transaction_password)) {
+        //     return back()->with([
+        //         'error_transaction_password' => 'Mot de passe de transaction incorrect.'
+        //     ]);
+        // }
 
+        $balance =Person::where('user_id',$user_id)->sum('balance');
+
+        if( $request->input('amount')<= $balance ) { 
+        
         $request->merge(['claimant_id' => $user_id]);
-        $request->merge(['leading_group_id' => intval(decrypt($request->leading_group_id))]);
+        $request->merge(['leading_group_id' => 1]);
+        //intval(decrypt($request->leading_group_id))]);
         $this->withdrawalRequestRepository->store($request->all());
 
         $this->markRepository->store([
@@ -122,6 +142,9 @@ class WithdrawalRequestController extends Controller
         return redirect()->route('withdrawal-request.not_processed_history')->with([
             'success' => 'Votre demande de retrait a été transmise avec succès !'
         ]);
+    } else return back()->with([
+                'error' => 'Desole! vous n\'avez pas assez de fond. max :'.$balance.'Fcfa'
+    ])->withInput();;
     }
 
     public function process(Request $request)

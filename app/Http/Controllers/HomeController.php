@@ -15,6 +15,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Newsletter;
+use App\Models\User;
+
 
 class HomeController extends Controller
 {
@@ -48,6 +50,7 @@ class HomeController extends Controller
      */
     public function dashboard(/*GenealogyDataManager $manager*/)
     {
+        $have_pay=null;
         $user = $this->userRepository->getByField('id', Auth::id());
         $my_codes = $user->person->number_of_code;
         $my_balance = $user->person->balance;
@@ -55,6 +58,11 @@ class HomeController extends Controller
         $my_level = $user->person->level_label;
         $my_recordings_traces = $this->recordingTransactionRepository->getARecorderCertainAmount($user->id, 5);
         $flagship_members = $this->userRepository->take(5);
+        
+
+        if($user->godfather_id!=null){
+            $have_pay=1;
+        }
 /*      $marks = $this->markRepository->take(5);
         $level_stats = $manager->getLevelStatsData();
         $recording_stats = $manager->getRecordingStatsData();
@@ -62,6 +70,7 @@ class HomeController extends Controller
         return view(
             'back-end.dashboard', 
             compact(
+                'have_pay',
                 'my_codes', 'my_balance', 'my_recordings', 'my_level', 
                 'my_recordings_traces', 'flagship_members'/*,
                 'marks', 'level_stats', 'recording_stats'*/

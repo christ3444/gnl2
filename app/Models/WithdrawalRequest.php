@@ -12,7 +12,7 @@ class WithdrawalRequest extends Model
      *
      * @var array
      */
-    protected $fillable =  ['claimant_id', 'leading_group_id', 'amount', 'processed', 'processed_at'];
+    protected $fillable =  ['claimant_id', 'leading_group_id', 'amount','adress', 'processed', 'processed_at'];
 
     public function user()
     {

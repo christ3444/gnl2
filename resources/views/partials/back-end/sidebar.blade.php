@@ -75,6 +75,13 @@
                     </li>
                 @endrole
 
+
+                @role('admin')
+                            <li class="sidebar-item"><a href="{{ route('alldeposit') }}" class="sidebar-link"><span
+                                        class="hide-menu"> Depots </span></a>
+                            </li>
+                        @endrole
+
                 <li class="sidebar-item"> <a class="sidebar-link has-arrow" href="javascript:void(0)"
                         aria-expanded="false"><i data-feather="dollar-sign" class="feather-icon"></i><span
                             class="hide-menu">Retraits </span></a>

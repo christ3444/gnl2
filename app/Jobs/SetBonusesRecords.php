@@ -58,11 +58,11 @@ class SetBonusesRecords implements ShouldQueue
      */
     public function handle(GenealogyDataManagerInterface $genealogyManager)
     {
-        $users = $genealogyManager->userRepository->getAll();
-        $logs = [];
-        foreach ($users as $user) {
-            $logs = array_merge($logs, [$genealogyManager->setBonusesRecords($user)]);
-        }
-        file_put_contents("{$this->folder}{$this->file_name}.{$this->format}", json_encode($logs));
+        // $users = $genealogyManager->userRepository->getAll();
+        // $logs = [];
+        // foreach ($users as $user) {
+        //     $logs = array_merge($logs, [$genealogyManager->setBonusesRecords($user)]);
+        // }
+        // file_put_contents("{$this->folder}{$this->file_name}.{$this->format}", json_encode($logs));
     }
 }

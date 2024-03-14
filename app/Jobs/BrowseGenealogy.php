@@ -58,7 +58,7 @@ class BrowseGenealogy implements ShouldQueue
      */
     public function handle(GenealogyDataManagerInterface $genealogyManager)
     {
-        $logs = $genealogyManager->browseAllGenalogy();
-        file_put_contents("{$this->folder}{$this->file_name}.{$this->format}", json_encode($logs));
+        // $logs = $genealogyManager->browseAllGenalogy();
+        // file_put_contents("{$this->folder}{$this->file_name}.{$this->format}", json_encode($logs));
     }
 }
