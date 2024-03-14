@@ -13,6 +13,8 @@ use Illuminate\Http\Request;
 use App\Models\Deposit;
 use App\Models\User;
 
+use Illuminate\Support\Facades\Auth;
+
 use Illuminate\Support\Facades\DB;
 
 class DepositController extends Controller
@@ -44,8 +46,9 @@ class DepositController extends Controller
  }
     public function index()
     {
-        $admin="admin";
-        $somme=5000*Deposit::count('user_id');
+        $user_id = Auth::id();
+        $admin= $this->userRepository->getRole($user_id) === config('util.roles.admin')['role'];
+        $somme = 5000 * Deposit::count('user_id');
         $deposits =0;
         return view('back-end.deposit.index',compact('admin','somme','deposits'));
     }

@@ -28,7 +28,8 @@
                 <div class="col-md-12">
                     <div class="card border-dark">
                         <div class="card-header bg-dark d-flex justify-content-between">
-                            <h3 class="text-white mb-0">  @if ($admin ?? '') 
+                            <h3 class="text-white mb-0"> 
+                                 @if ($admin ?? '') 
                                  Total dépot : {{$somme}} Fcfa
                                    @else 
                                   
@@ -54,7 +55,7 @@
                                     </a>
                                 </div>
                             @endif
-                            <table class="table table-bordered data-table">
+                            <!-- <table class="table table-bordered data-table">
                                 <thead>
                                     <tr>
                                       
@@ -70,7 +71,7 @@
                                     <td>User pseudo</td>
                                     <td>Date de depot</td>
                                 </tbody>
-                            </table>
+                            </table> -->
                         </div>
                     </div>
                 </div>
