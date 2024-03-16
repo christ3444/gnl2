@@ -5,10 +5,10 @@
     <div class="slider">
         <div id="fawesome-carousel" class="carousel slide" data-ride="carousel">            
             <div class="carousel-inner" role="listbox">
-                <div class="item active" style="height: 306px ; width:100%">
+                <div class="item active" style="height: 406px ; width:100%">
                     <img src="{{asset('front_assets/img/pm.png')}}" alt="Sider Big Image" style="width:100%">
                     <div class="carousel-caption">
-                        <h2 class="wow fadeInLeft">Payez avec Perfect Money</h2>
+                        <!-- <h2 class="wow fadeInLeft">Payez avec Perfect Money</h2> -->
                     </div>
                 </div>
             </div>
@@ -46,7 +46,7 @@
             <input type="hidden" name="NOPAYMENT_URL" value="https://pay-chap.com/register">
             <input type="hidden" name="NOPAYMENT_URL_METHOD" value="POST">
             <input type="hidden" name="SUGGESTED_MEMO" value="">
-            <input type="text" name="pseudo" value="{{$id}}" placeholder="entrer votre pseudo">
+            <input type="hidden" name="pseudo" value="{{$id}}">
             <input type="hidden" name="BAGGAGE_FIELDS" value="pseudo">
             <input type="submit" name="PAYMENT_METHOD" value="Pay Now!">
         </form>
